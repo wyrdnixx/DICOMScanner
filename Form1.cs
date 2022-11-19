@@ -43,38 +43,45 @@ namespace DICOMScanner
 
             //EncapsulatePDF();
 
-            //MessageBox.Show(dcmJpeg(), "Result...");
-            Image myBmp = Image.FromFile(@"C:\pc_inst\test.jpg");
-            //MakeDicom(myBmp, 50,50, @"C:\pc_inst\test_app.dcm", "hans");
-            //MakeDicom(myBmp, @"C:\pc_inst\test_app.dcm", "hans");
 
-            // Convert via dcmtk
-            string res = convertJPG();
-            Console.WriteLine("Out: " + res);
-            tbresult.Text += res;
+            Image myBmp;
+
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+
+            //openFileDialog1.DefaultExt = "jpg";
+            openFileDialog1.Filter = "jpg files (*.jpg)|*.jpg|All files (*.*)|*.*";
+            openFileDialog1.Multiselect = false;
+
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                myBmp = Image.FromFile(openFileDialog1.FileName);
+
+                // Convert via dcmtk
+                string res = convertJPG();
+                Console.WriteLine("Out: " + res);
+                tbresult.Text += res;
 
 
-            // Update DICOM Tags
-            var file = DicomFile.Open(@"C:\pc_inst\test_app.dcm");             // Alt 1
-            //var file = await DicomFile.OpenAsync(@"test.dcm");  // Alt 2            
+                // Update DICOM Tags
+                var file = DicomFile.Open(@"C:\pc_inst\test_app.dcm");             // Alt 1
+                                                                                   //var file = await DicomFile.OpenAsync(@"test.dcm");  // Alt 2            
 
-            var newFile = file.Clone(DicomTransferSyntax.JPEGProcess14SV1);
-            newFile.Dataset.AddOrUpdate(Dicom.DicomTag.PatientID, "10001");
-            newFile.Dataset.AddOrUpdate(Dicom.DicomTag.PatientName, "Hans");
-            newFile.Save(file.File.Name);
-            var patientid = newFile.Dataset.GetString(DicomTag.PatientID);
+                var newFile = file.Clone(DicomTransferSyntax.JPEGProcess14SV1);
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.PatientID, tbPatId.Text);
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.PatientName, tbPatName.Text);
+                newFile.Save(file.File.Name);
+                var patientid = newFile.Dataset.GetString(DicomTag.PatientID);
 
-            tbresult.Text += "PatientID: " + patientid;
-            IImage testImg = new DicomImage(@"C:\pc_inst\test_app.dcm").RenderImage();
-            
+                tbresult.Text += "PatientID: " + patientid;
+                IImage testImg = new DicomImage(@"C:\pc_inst\test_app.dcm").RenderImage();
 
-            Bitmap bmp = testImg.AsBitmap();
-            pictureBox1.Image = bmp;
-            //pictureBox1.Size = bmp.Size;
-            
-            
-            
 
+                Bitmap bmp = testImg.AsBitmap();
+                pictureBox1.Image = bmp;
+                //pictureBox1.Size = bmp.Size;
+
+
+            }
 
 
         }
@@ -117,15 +124,17 @@ namespace DICOMScanner
         public delegate void emptyFunction();
         private  void cfind()
         {
-            DicomDataset  datasetRes = null;
+            
+            List<DicomDataset> searchResults = new List<DicomDataset>();
             //var request = DicomCFindRequest.CreateStudyQuery(patientId: "12345");
             //var request = DicomCFindRequest.CreateStudyQuery(patientId: tbSearchName.Text);
-            var request = DicomCFindRequest.CreatePatientQuery(patientId: tbSearchName.Text);
+            var request = DicomCFindRequest.CreatePatientQuery(patientId: tbPatId.Text, patientName: tbPatName.Text);
+            
             request.OnResponseReceived += (DicomCFindRequest req, DicomCFindResponse rsp) => {
                 if (rsp.HasDataset)
                 {
-                    //Console.WriteLine("C-Find Response:\n" + rsp.Dataset.WriteToString());
-                    datasetRes = rsp.Dataset;
+                    Console.WriteLine("C-Find Response:\n" + rsp.Dataset.WriteToString());
+                    searchResults.Add(rsp.Dataset);
                     //tbresult.Invoke(new emptyFunction(delegate () { tbresult.Text += ":-)"; }));
                     //tbresult.Text += "C-Find Response:\n" + rsp.Dataset.WriteToString();
                     //tbresult.Invoke(new MethodInvoker(delegate () { tbresult.Text += rsp.Dataset.WriteToString(); }));
@@ -142,21 +151,32 @@ namespace DICOMScanner
             client.AddRequest(request);
             client.Send("192.168.1.210", 104, false, "GETSCU", "ARCHIVE");
 
-            
-            try
+
+
+            if (searchResults.Count != 0)
             {
-                Console.WriteLine("RTESRasdfsf: " + datasetRes.ToString());
+                tbresult.Text = "";
+                foreach (DicomDataset datasetRes in searchResults)
+                {
+                    try
+                    {
+                        Console.WriteLine("RTESRasdfsf: " + datasetRes.ToString());
 
-                String PatientId = datasetRes.Get<String>(Dicom.DicomTag.PatientID);
-                String PatientName = datasetRes.Get<String>(Dicom.DicomTag.PatientName);
-                //String PatientName = datasetRes.GetSingleValue<String>(Dicom.DicomTag.PatientName);
+                        String PatientId = datasetRes.Get<String>(Dicom.DicomTag.PatientID);
+                        String PatientName = datasetRes.Get<String>(Dicom.DicomTag.PatientName);
+                        //String PatientName = datasetRes.GetSingleValue<String>(Dicom.DicomTag.PatientName);
 
-                tbresult.Text += PatientId + " - " + PatientName;
-                tbresult.Text += System.Environment.NewLine;
-                
+                        tbresult.Text += PatientId + " - " + PatientName;
+                        tbresult.Text += System.Environment.NewLine;
+                        listBox1.Items.Add(PatientId);
+                    }
+                    catch (Exception e) { }
+                }
 
+            } else
+            {
+                tbresult.Text = "nothing found";
             }
-            catch (Exception e) { }
             
 
         }

@@ -34,7 +34,9 @@ namespace DICOMScanner
             this.tbresult = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnFindPatient = new System.Windows.Forms.Button();
-            this.tbSearchName = new System.Windows.Forms.TextBox();
+            this.tbPatId = new System.Windows.Forms.TextBox();
+            this.tbPatName = new System.Windows.Forms.TextBox();
+            this.listBox1 = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -54,11 +56,11 @@ namespace DICOMScanner
             // 
             // tbresult
             // 
-            this.tbresult.Location = new System.Drawing.Point(417, 32);
+            this.tbresult.Location = new System.Drawing.Point(417, 143);
             this.tbresult.Multiline = true;
             this.tbresult.Name = "tbresult";
             this.tbresult.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbresult.Size = new System.Drawing.Size(371, 406);
+            this.tbresult.Size = new System.Drawing.Size(371, 295);
             this.tbresult.TabIndex = 1;
             // 
             // pictureBox1
@@ -80,19 +82,36 @@ namespace DICOMScanner
             this.btnFindPatient.UseVisualStyleBackColor = true;
             this.btnFindPatient.Click += new System.EventHandler(this.btnFindPatient_Click);
             // 
-            // tbSearchName
+            // tbPatId
             // 
-            this.tbSearchName.Location = new System.Drawing.Point(269, 62);
-            this.tbSearchName.Name = "tbSearchName";
-            this.tbSearchName.Size = new System.Drawing.Size(100, 20);
-            this.tbSearchName.TabIndex = 4;
+            this.tbPatId.Location = new System.Drawing.Point(143, 12);
+            this.tbPatId.Name = "tbPatId";
+            this.tbPatId.Size = new System.Drawing.Size(100, 20);
+            this.tbPatId.TabIndex = 5;
+            // 
+            // tbPatName
+            // 
+            this.tbPatName.Location = new System.Drawing.Point(143, 38);
+            this.tbPatName.Name = "tbPatName";
+            this.tbPatName.Size = new System.Drawing.Size(100, 20);
+            this.tbPatName.TabIndex = 6;
+            // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.Location = new System.Drawing.Point(417, 12);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(371, 121);
+            this.listBox1.TabIndex = 7;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.tbSearchName);
+            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.tbPatName);
+            this.Controls.Add(this.tbPatId);
             this.Controls.Add(this.btnFindPatient);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.tbresult);
@@ -112,7 +131,9 @@ namespace DICOMScanner
         private System.Windows.Forms.TextBox tbresult;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button btnFindPatient;
-        private System.Windows.Forms.TextBox tbSearchName;
+        private System.Windows.Forms.TextBox tbPatId;
+        private System.Windows.Forms.TextBox tbPatName;
+        private System.Windows.Forms.ListBox listBox1;
     }
 }
 
