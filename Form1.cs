@@ -2,6 +2,9 @@
 using Dicom.Imaging;
 using Dicom.Imaging.Codec;
 using Dicom.IO.Buffer;
+using Dicom.Log;
+using Dicom.Network;
+using FellowOakDicom.Network.Client;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,13 +29,12 @@ namespace DICOMScanner
 {
     public partial class Form1 : Form
     {
+       
         public Form1()
         {
             InitializeComponent();
         }
-
-
-    
+            
 
 
         private void btnTestConvert_Click(object sender, EventArgs e)
@@ -58,6 +60,7 @@ namespace DICOMScanner
 
             var newFile = file.Clone(DicomTransferSyntax.JPEGProcess14SV1);
             newFile.Dataset.AddOrUpdate(Dicom.DicomTag.PatientID, "10001");
+            newFile.Dataset.AddOrUpdate(Dicom.DicomTag.PatientName, "Hans");
             newFile.Save(file.File.Name);
             var patientid = newFile.Dataset.GetString(DicomTag.PatientID);
 
@@ -75,6 +78,12 @@ namespace DICOMScanner
 
 
         }
+
+        private void btnFindPatient_Click(object sender, EventArgs e)
+        {
+            cfind();
+        }
+
 
         static String  convertJPG()
         {
@@ -104,6 +113,54 @@ namespace DICOMScanner
             }
             
         }
+
+        public delegate void emptyFunction();
+        private  void cfind()
+        {
+            DicomDataset  datasetRes = null;
+            //var request = DicomCFindRequest.CreateStudyQuery(patientId: "12345");
+            //var request = DicomCFindRequest.CreateStudyQuery(patientId: tbSearchName.Text);
+            var request = DicomCFindRequest.CreatePatientQuery(patientId: tbSearchName.Text);
+            request.OnResponseReceived += (DicomCFindRequest req, DicomCFindResponse rsp) => {
+                if (rsp.HasDataset)
+                {
+                    //Console.WriteLine("C-Find Response:\n" + rsp.Dataset.WriteToString());
+                    datasetRes = rsp.Dataset;
+                    //tbresult.Invoke(new emptyFunction(delegate () { tbresult.Text += ":-)"; }));
+                    //tbresult.Text += "C-Find Response:\n" + rsp.Dataset.WriteToString();
+                    //tbresult.Invoke(new MethodInvoker(delegate () { tbresult.Text += rsp.Dataset.WriteToString(); }));
+                } else
+                {
+                    //tbresult.Invoke(new MethodInvoker(delegate () { tbresult.Text += "nothing found"; }));
+                    
+                    Console.WriteLine("nothing found");
+                }
+                
+            };
+
+            var client = new Dicom.Network.DicomClient();
+            client.AddRequest(request);
+            client.Send("192.168.1.210", 104, false, "GETSCU", "ARCHIVE");
+
+            
+            try
+            {
+                Console.WriteLine("RTESRasdfsf: " + datasetRes.ToString());
+
+                String PatientId = datasetRes.Get<String>(Dicom.DicomTag.PatientID);
+                String PatientName = datasetRes.Get<String>(Dicom.DicomTag.PatientName);
+                //String PatientName = datasetRes.GetSingleValue<String>(Dicom.DicomTag.PatientName);
+
+                tbresult.Text += PatientId + " - " + PatientName;
+                tbresult.Text += System.Environment.NewLine;
+                
+
+            }
+            catch (Exception e) { }
+            
+
+        }
+
     #region asyn test
         public void convertJPGasync()
         {
@@ -304,6 +361,6 @@ namespace DICOMScanner
             return (byte[])converter.ConvertTo(img, typeof(byte[]));
         }
 
-
+ 
     }
 }
