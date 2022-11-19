@@ -29,9 +29,9 @@ namespace DICOMScanner
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.btnTestConvert = new System.Windows.Forms.Button();
+            this.tbresult = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -50,13 +50,22 @@ namespace DICOMScanner
             this.btnTestConvert.UseVisualStyleBackColor = true;
             this.btnTestConvert.Click += new System.EventHandler(this.btnTestConvert_Click);
             // 
+            // tbresult
+            // 
+            this.tbresult.Location = new System.Drawing.Point(417, 32);
+            this.tbresult.Multiline = true;
+            this.tbresult.Name = "tbresult";
+            this.tbresult.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbresult.Size = new System.Drawing.Size(371, 406);
+            this.tbresult.TabIndex = 1;
+            // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(468, 53);
+            this.pictureBox1.Location = new System.Drawing.Point(42, 143);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(241, 206);
-            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.Size = new System.Drawing.Size(351, 295);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
             // 
             // Form1
@@ -65,11 +74,13 @@ namespace DICOMScanner
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.tbresult);
             this.Controls.Add(this.btnTestConvert);
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -77,6 +88,7 @@ namespace DICOMScanner
 
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button btnTestConvert;
+        private System.Windows.Forms.TextBox tbresult;
         private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
