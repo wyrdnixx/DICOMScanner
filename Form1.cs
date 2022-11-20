@@ -29,6 +29,9 @@ namespace DICOMScanner
 {
     public partial class Form1 : Form
     {
+
+        //private Patient[] PatientList;
+        private List<Patient> PatientList;
        
         public Form1()
         {
@@ -57,7 +60,7 @@ namespace DICOMScanner
                 myBmp = Image.FromFile(openFileDialog1.FileName);
 
                 // Convert via dcmtk
-                string res = convertJPG();
+                string res = convertJPG(openFileDialog1.FileName);
                 Console.WriteLine("Out: " + res);
                 tbresult.Text += res;
 
@@ -92,11 +95,12 @@ namespace DICOMScanner
         }
 
 
-        static String  convertJPG()
+        static String  convertJPG(String _file)
         {
             Process process = new Process();
             process.StartInfo.FileName = @"C:\pc_inst\TestSCU\dcmtk\bin\img2dcm.exe";
-            process.StartInfo.Arguments = @"C:\pc_inst\test.jpg C:\pc_inst\test_app.dcm -v"; // Note the /c command (*)
+            process.StartInfo.Arguments = _file + @" C:\pc_inst\test_app.dcm -v"; // Note the /c command (*)
+            //process.StartInfo.Arguments = @"C:\pc_inst\test.jpg C:\pc_inst\test_app.dcm -v"; // Note the /c command (*)
             //process.StartInfo.Arguments = @"/C C:\pc_inst\TestSCU\dcmtk\bin\img2dcm.exe C:\pc_inst\test.jpg C:\pc_inst\test_dcm.dcm -ll info"; // Note the /c command (*)
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
@@ -151,7 +155,9 @@ namespace DICOMScanner
             client.AddRequest(request);
             client.Send("192.168.1.210", 104, false, "GETSCU", "ARCHIVE");
 
+            listBox1.Items.Clear();
 
+            PatientList = new List<Patient>();
 
             if (searchResults.Count != 0)
             {
@@ -168,7 +174,17 @@ namespace DICOMScanner
 
                         tbresult.Text += PatientId + " - " + PatientName;
                         tbresult.Text += System.Environment.NewLine;
-                        listBox1.Items.Add(PatientId);
+                        listBox1.Items.Add(PatientId + ":" + PatientName);
+
+                        Patient p = new Patient();
+                        p.ID = PatientId;
+                        p.FirstName = PatientName;
+                        PatientList.Add(p);
+
+                        ListViewItem item = new ListViewItem(PatientId);
+                        item.SubItems.Add(PatientName);
+                        listView1.Items.Add(item);
+
                     }
                     catch (Exception e) { }
                 }
@@ -177,8 +193,14 @@ namespace DICOMScanner
             {
                 tbresult.Text = "nothing found";
             }
-            
 
+    
+            // test
+            foreach (Patient p in PatientList)
+            {
+                tbresult.Text += "Object: " + p.FirstName;
+            }
+ 
         }
 
     #region asyn test
@@ -381,6 +403,12 @@ namespace DICOMScanner
             return (byte[])converter.ConvertTo(img, typeof(byte[]));
         }
 
- 
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.listView1.SelectedItems.Count == 0)
+                return;
+            tbPatId.Text = listView1.SelectedItems[0].SubItems[0].Text;
+            tbPatName.Text = listView1.SelectedItems[0].SubItems[1].Text;
+        }
     }
 }
