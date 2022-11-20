@@ -72,6 +72,19 @@ namespace DICOMScanner
                 var newFile = file.Clone(DicomTransferSyntax.JPEGProcess14SV1);
                 newFile.Dataset.AddOrUpdate(Dicom.DicomTag.PatientID, tbPatId.Text);
                 newFile.Dataset.AddOrUpdate(Dicom.DicomTag.PatientName, tbPatName.Text);
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.SOPClassUID, Dicom.DicomUID.ComputedRadiographyImageStorage);
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.SOPInstanceUID, Dicom.DicomUID.ComputedRadiographyImageStorage);
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.StudyDate, DateTime.Now);
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.StudyTime, DateTime.Now);
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.AccessionNumber, "");
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.ReferringPhysicianName, "Hans-Doktor");
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.StudyID, "1");
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.SeriesNumber, "1");
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.ModalitiesInStudy, "CR");
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.Modality, "CR");
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.NumberOfStudyRelatedInstances, "1");
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.NumberOfStudyRelatedSeries, "1");
+                newFile.Dataset.AddOrUpdate(Dicom.DicomTag.NumberOfSeriesRelatedInstances, "1");
                 newFile.Save(file.File.Name);
                 var patientid = newFile.Dataset.GetString(DicomTag.PatientID);
 
