@@ -40,6 +40,7 @@ namespace DICOMScanner
             this.listView1 = new System.Windows.Forms.ListView();
             this.ID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Name = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btnStoreSCU = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -132,11 +133,22 @@ namespace DICOMScanner
             this.Name.Text = "Name";
             this.Name.Width = 147;
             // 
+            // btnStoreSCU
+            // 
+            this.btnStoreSCU.Location = new System.Drawing.Point(217, 459);
+            this.btnStoreSCU.Name = "btnStoreSCU";
+            this.btnStoreSCU.Size = new System.Drawing.Size(75, 23);
+            this.btnStoreSCU.TabIndex = 9;
+            this.btnStoreSCU.Text = "Store";
+            this.btnStoreSCU.UseVisualStyleBackColor = true;
+            this.btnStoreSCU.Click += new System.EventHandler(this.btnStoreSCU_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 503);
+            this.Controls.Add(this.btnStoreSCU);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.tbPatName);
@@ -144,7 +156,8 @@ namespace DICOMScanner
             this.Controls.Add(this.btnFindPatient);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.tbresult);
-            this.Controls.Add(this.btnTestConvert);            
+            this.Controls.Add(this.btnTestConvert);
+            
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -164,6 +177,7 @@ namespace DICOMScanner
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ColumnHeader ID;
         private System.Windows.Forms.ColumnHeader Name;
+        private System.Windows.Forms.Button btnStoreSCU;
     }
 }
 

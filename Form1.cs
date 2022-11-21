@@ -107,7 +107,25 @@ namespace DICOMScanner
             cfind();
         }
 
+        private void btnStoreSCU_Click(object sender, EventArgs e)
+        {
+            StoreSCU();
+        }
 
+        private async void StoreSCU()
+        {
+            var client = DicomClientFactory.Create("192.168.1.210", 104, false, "GETSCU", "ARCHIVE");
+            var request = new FellowOakDicom.Network.DicomCStoreRequest(@"C:\pc_inst\test_app.dcm");
+
+            request.OnResponseReceived += (FellowOakDicom.Network.DicomCStoreRequest req, FellowOakDicom.Network.DicomCStoreResponse rsp) =>
+             {
+                 Console.WriteLine("--> "+ rsp.ToString());
+             };
+
+            await client.AddRequestAsync(request);
+            await client.SendAsync();
+            
+        }
         static String  convertJPG(String _file)
         {
             Process process = new Process();
@@ -423,5 +441,7 @@ namespace DICOMScanner
             tbPatId.Text = listView1.SelectedItems[0].SubItems[0].Text;
             tbPatName.Text = listView1.SelectedItems[0].SubItems[1].Text;
         }
+
+       
     }
 }
